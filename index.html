@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>График смен</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>График смен</h1>
+    <p>Отсыпной · Выходной · День · Ночь</p>
+  </header>
+
+  <!-- Опорная точка -->
+  <div class="card">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="5" r="3"/>
+        <line x1="12" y1="8" x2="12" y2="22"/>
+        <path d="M5 15h14"/>
+      </svg>
+      Опорная точка
+    </div>
+
+    <div class="anchor-display" id="anchorDisplay">
+      <div class="dot off" id="anchorDot"></div>
+      <span id="anchorText">Не задана — выберите дату и смену ниже</span>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label>Дата</label>
+        <div class="date-input-wrap" id="anchorDateWrap">
+          <span class="date-input-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </span>
+          <span class="date-input-text" id="anchorDateText">Выберите дату</span>
+          <input type="hidden" id="anchorDate" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Смена на эту дату</label>
+        <select id="anchorShift">
+          <option value="0">🌅 Отсыпной</option>
+          <option value="1">☀️ Выходной</option>
+          <option value="2">🌤 День</option>
+          <option value="3">🌙 Ночь</option>
+        </select>
+      </div>
+      <button class="btn btn-save" onclick="saveAnchor()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Сохранить
+      </button>
+    </div>
+
+    <div class="query-row">
+      <div class="field">
+        <label>Посмотреть смену на дату</label>
+        <div class="date-input-wrap" id="queryDateWrap">
+          <span class="date-input-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </span>
+          <span class="date-input-text" id="queryDateText">Выберите дату</span>
+          <input type="hidden" id="queryDate" />
+        </div>
+      </div>
+      <button class="btn btn-calc" onclick="calcQuery()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="4" y="2" width="16" height="20" rx="2"/>
+          <line x1="8" y1="7" x2="16" y2="7"/>
+          <line x1="8" y1="11" x2="16" y2="11"/>
+          <line x1="8" y1="15" x2="12" y2="15"/>
+        </svg>
+        Рассчитать
+      </button>
+    </div>
+
+    <div class="result-block" id="resultBlock">
+      <div class="result-icon" id="resultIcon"></div>
+      <div class="result-info">
+        <div class="result-date-label" id="resultDateLabel"></div>
+        <div class="result-shift" id="resultShift"></div>
+        <div class="result-meta" id="resultMeta"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Текущая неделя -->
+  <div class="card">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8" y1="2" x2="8" y2="6"/>
+        <line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+      Текущая неделя
+    </div>
+    <div class="week-strip" id="weekStrip"></div>
+  </div>
+
+  <!-- Основной календарь -->
+  <div class="card">
+    <div class="cal-header">
+      <div class="cal-month" id="calMonthLabel"></div>
+      <div class="cal-nav">
+        <button class="btn btn-nav" onclick="prevMonth()">&#8249;</button>
+        <button class="btn btn-nav" onclick="goToday()">Сег.</button>
+        <button class="btn btn-nav" onclick="nextMonth()">&#8250;</button>
+      </div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot s-sleep"></div>Отсыпной</div>
+      <div class="legend-item"><div class="legend-dot s-off"></div>Выходной</div>
+      <div class="legend-item"><div class="legend-dot s-day"></div>День</div>
+      <div class="legend-item"><div class="legend-dot s-night"></div>Ночь</div>
+    </div>
+  </div>
+
+  <footer>График смен · данные хранятся локально в браузере</footer>
+</div>
+
+<!-- Кастомный дейт-пикер (попап) -->
+<div class="dp-backdrop" id="dpBackdrop"></div>
+<div class="dp" id="dp" role="dialog" aria-modal="true" aria-label="Выбор даты">
+  <div class="dp-header">
+    <button class="dp-nav" id="dpPrev" aria-label="Предыдущий месяц">&#8249;</button>
+    <div class="dp-header-center">
+      <button class="dp-month-btn" id="dpMonthBtn"></button>
+      <button class="dp-year-btn"  id="dpYearBtn"></button>
+    </div>
+    <button class="dp-nav" id="dpNext" aria-label="Следующий месяц">&#8250;</button>
+  </div>
+  <div class="dp-body" id="dpBody"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

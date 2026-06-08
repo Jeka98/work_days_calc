@@ -1,0 +1,705 @@
+/* ─── Переменные ──────────────────────────────────────────── */
+:root {
+  --bg:           #0e0e12;
+  --surface:      #17171e;
+  --surface2:     #1f1f28;
+  --border:       rgba(255,255,255,0.07);
+  --border2:      rgba(255,255,255,0.13);
+  --text:         #f0eef8;
+  --muted:        #7a788a;
+  --accent:       #8b7cf8;
+  --accent-glow:  rgba(139,124,248,0.25);
+
+  /* смены */
+  --day-bg:     #1a2a3a;  --day-text:   #7ec8f0;  --day-border:   #2a4a6a;  --day-glow:   rgba(126,200,240,0.15);
+  --sleep-bg:   #2a1f0a;  --sleep-text: #f0a830;  --sleep-border: #4a3a1a;  --sleep-glow: rgba(240,168,48,0.15);
+  --off-bg:     #0f2a1a;  --off-text:   #5ed49a;  --off-border:   #1a4a2a;  --off-glow:   rgba(94,212,154,0.15);
+  --night-bg:   #1a1030;  --night-text: #b09aee;  --night-border: #3a2a5a;  --night-glow: rgba(176,154,238,0.15);
+}
+
+/* ─── Сброс и база ────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Golos Text', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+/* звёздное небо */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 72% 11%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 65%, rgba(255,255,255,0.30) 0%, transparent 100%),
+    radial-gradient(1px 1px at 33% 80%, rgba(255,255,255,0.20) 0%, transparent 100%),
+    radial-gradient(1px 1px at 54% 45%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at  6% 55%, rgba(255,255,255,0.20) 0%, transparent 100%),
+    radial-gradient(1px 1px at 96% 30%, rgba(255,255,255,0.25) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ─── Контейнер ───────────────────────────────────────────── */
+.container {
+  position: relative; z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ─── Шапка ───────────────────────────────────────────────── */
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+header h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #c4b8ff 0%, #8b7cf8 50%, #60a8e8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.4rem;
+}
+
+header p {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+/* ─── Карточка ────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.card-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-title svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ─── Опорная точка ───────────────────────────────────────── */
+.anchor-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.75rem 1rem;
+  background: var(--surface2);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+  font-size: 13px;
+}
+
+.anchor-display .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+  flex-shrink: 0;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.anchor-display .dot.off {
+  background: var(--muted);
+  box-shadow: none;
+}
+.anchor-display span  { color: var(--muted); }
+.anchor-display strong { color: var(--text); }
+
+/* ─── Форма ───────────────────────────────────────────────── */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.query-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: end;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 0.5px solid var(--border);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.field label {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+input[type="date"],
+select {
+  font-family: 'Golos Text', sans-serif;
+  font-size: 14px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 0.55rem 0.75rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input[type="date"]:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+select option { background: #1f1f28; }
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.6);
+  cursor: pointer;
+}
+
+/* ─── Кнопки ──────────────────────────────────────────────── */
+.btn {
+  font-family: 'Golos Text', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  border: 0.5px solid var(--border2);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+}
+
+.btn-save {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+.btn-save:hover {
+  background: #a092ff;
+  box-shadow: 0 0 24px var(--accent-glow);
+}
+.btn-save:active { transform: scale(0.97); }
+
+.btn-calc {
+  background: transparent;
+  color: var(--text);
+}
+.btn-calc:hover {
+  background: var(--surface2);
+  border-color: var(--accent);
+}
+
+.btn-nav {
+  background: transparent;
+  color: var(--muted);
+  border: 0.5px solid var(--border);
+  padding: 0.4rem 0.9rem;
+  height: 32px;
+  font-size: 16px;
+}
+.btn-nav:hover {
+  color: var(--text);
+  border-color: var(--border2);
+  background: var(--surface2);
+}
+
+/* ─── Блок результата ─────────────────────────────────────── */
+.result-block {
+  display: none;
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  border: 0.5px solid var(--border2);
+  background: var(--surface2);
+  transition: border-color 0.2s;
+}
+.result-block.vis { display: flex; align-items: center; gap: 14px; }
+
+.result-icon   { font-size: 2rem; line-height: 1; }
+.result-date-label { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+.result-shift  { font-family: 'Unbounded', sans-serif; font-size: 1.3rem; font-weight: 600; }
+.result-meta   { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+.result-block.s-day   { border-color: var(--day-border);   } .result-block.s-day   .result-shift { color: var(--day-text);   }
+.result-block.s-sleep { border-color: var(--sleep-border); } .result-block.s-sleep .result-shift { color: var(--sleep-text); }
+.result-block.s-off   { border-color: var(--off-border);   } .result-block.s-off   .result-shift { color: var(--off-text);   }
+.result-block.s-night { border-color: var(--night-border); } .result-block.s-night .result-shift { color: var(--night-text); }
+
+/* ─── Полоска недели ──────────────────────────────────────── */
+.week-strip {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.week-cell {
+  border-radius: 10px;
+  padding: 8px 4px 6px;
+  text-align: center;
+  border: 0.5px solid transparent;
+  transition: transform 0.1s;
+}
+.week-cell:hover { transform: scale(1.05); }
+
+.week-cell .wd { font-size: 10px; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.04em; }
+.week-cell .wn { font-size: 15px; font-weight: 600; line-height: 1; margin-bottom: 3px; }
+.week-cell .ws { font-size: 13px; line-height: 1; }
+
+/* ─── Календарь ───────────────────────────────────────────── */
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+.cal-month {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+}
+.cal-nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+/* заголовки дней недели */
+.cal-dow {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 3px 0 8px;
+  letter-spacing: 0.06em;
+  font-family: 'Unbounded', sans-serif;
+}
+
+/* ячейки */
+.cal-cell {
+  position: relative;
+  border-radius: 10px;
+  padding: 6px 4px 5px;
+  text-align: center;
+  min-height: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border: 0.5px solid transparent;
+  transition: transform 0.12s, box-shadow 0.12s;
+  cursor: default;
+}
+.cal-cell:not(.cal-empty):hover {
+  transform: scale(1.07);
+  z-index: 2;
+}
+
+.cal-cell.cal-empty {
+  background: transparent;
+  border-color: transparent;
+  pointer-events: none;
+}
+
+.cal-num {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+}
+.cal-lbl {
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  font-family: 'Unbounded', sans-serif;
+  opacity: 0.85;
+}
+.cal-icon {
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* выделение сегодня */
+.cal-cell.today,
+.week-cell.today {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* ─── Цвета смен (общие для cal-cell, week-cell, legend-dot) ─ */
+
+/* День */
+.s-day {
+  background: var(--day-bg);
+  border-color: var(--day-border);
+}
+.s-day .cal-num,
+.s-day .wn           { color: var(--day-text); }
+.s-day .cal-lbl,
+.s-day .cal-icon,
+.s-day .ws           { color: #4a9abb; }
+.s-day .wd           { color: #4a7a8a; }
+
+/* Отсыпной */
+.s-sleep {
+  background: var(--sleep-bg);
+  border-color: var(--sleep-border);
+}
+.s-sleep .cal-num,
+.s-sleep .wn         { color: var(--sleep-text); }
+.s-sleep .cal-lbl,
+.s-sleep .cal-icon,
+.s-sleep .ws         { color: #c08020; }
+.s-sleep .wd         { color: #8a6020; }
+
+/* Выходной */
+.s-off {
+  background: var(--off-bg);
+  border-color: var(--off-border);
+}
+.s-off .cal-num,
+.s-off .wn           { color: var(--off-text); }
+.s-off .cal-lbl,
+.s-off .cal-icon,
+.s-off .ws           { color: #3a9a6a; }
+.s-off .wd           { color: #2a6a4a; }
+
+/* Ночь */
+.s-night {
+  background: var(--night-bg);
+  border-color: var(--night-border);
+}
+.s-night .cal-num,
+.s-night .wn         { color: var(--night-text); }
+.s-night .cal-lbl,
+.s-night .cal-icon,
+.s-night .ws         { color: #7060bb; }
+.s-night .wd         { color: #504080; }
+
+/* ─── Легенда ─────────────────────────────────────────────── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 0.5px solid var(--border);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.legend-dot {
+  width: 12px; height: 12px;
+  border-radius: 4px;
+  border: 0.5px solid transparent;
+  flex-shrink: 0;
+}
+
+/* ─── Футер ───────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2rem;
+  opacity: 0.45;
+  letter-spacing: 0.03em;
+}
+
+/* ─── Адаптив ─────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .form-row .btn-save {
+    grid-column: 1 / -1;
+  }
+  .cal-cell {
+    min-height: 44px;
+    border-radius: 8px;
+  }
+  .cal-num  { font-size: 12px; }
+  .cal-lbl  { font-size: 8px; }
+  .cal-icon { display: none; }
+}
+
+/* ─── Кастомный инпут-дата ────────────────────────────────── */
+.date-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border2);
+  border-radius: 8px;
+  padding: 0 0.75rem;
+  height: 36px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.date-input-wrap:hover {
+  border-color: var(--border2);
+  background: #252530;
+}
+.date-input-wrap.open,
+.date-input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.date-input-wrap.has-value .date-input-text {
+  color: var(--text);
+}
+.date-input-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.date-input-icon svg {
+  width: 14px; height: 14px;
+  stroke: var(--muted);
+}
+.date-input-text {
+  font-family: 'Golos Text', sans-serif;
+  font-size: 14px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Попап дейт-пикера ───────────────────────────────────── */
+.dp-backdrop {
+  display: none;
+  position: fixed; inset: 0; z-index: 99;
+}
+.dp-backdrop.open { display: block; }
+
+.dp {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  background: var(--surface);
+  border: 0.5px solid var(--border2);
+  border-radius: 14px;
+  padding: 1rem;
+  width: 280px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 0.5px var(--border2);
+  animation: dp-in 0.15s ease;
+}
+.dp.open { display: block; }
+
+@keyframes dp-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+/* шапка пикера */
+.dp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  gap: 4px;
+}
+.dp-header-center {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+}
+.dp-month-btn,
+.dp-year-btn {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  background: none;
+  border: 0.5px solid transparent;
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+  padding: 3px 7px;
+  transition: background 0.12s, border-color 0.12s;
+}
+.dp-month-btn:hover,
+.dp-year-btn:hover {
+  background: var(--surface2);
+  border-color: var(--border2);
+}
+.dp-nav {
+  background: none;
+  border: 0.5px solid var(--border);
+  border-radius: 6px;
+  color: var(--muted);
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.12s, background 0.12s, border-color 0.12s;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+}
+.dp-nav:hover {
+  color: var(--text);
+  background: var(--surface2);
+  border-color: var(--border2);
+}
+
+/* тело: дни / месяцы / годы */
+.dp-body { position: relative; }
+
+/* сетка дней */
+.dp-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+.dp-dow {
+  text-align: center;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 9px;
+  color: var(--muted);
+  padding: 2px 0 6px;
+  letter-spacing: 0.05em;
+}
+.dp-day {
+  text-align: center;
+  border-radius: 7px;
+  padding: 5px 2px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 0.5px solid transparent;
+  color: var(--text);
+  transition: background 0.1s, border-color 0.1s, transform 0.1s;
+  line-height: 1;
+  aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.dp-day:hover:not(.dp-empty):not(.dp-selected) {
+  background: var(--surface2);
+  border-color: var(--border2);
+  transform: scale(1.08);
+}
+.dp-day.dp-empty {
+  pointer-events: none;
+  color: transparent;
+}
+.dp-day.dp-today {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+.dp-day.dp-selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+/* цветовой намёк от смены на фоне дня */
+.dp-day.dp-hint-day   { background: var(--day-bg);   border-color: var(--day-border);   color: var(--day-text);   }
+.dp-day.dp-hint-sleep { background: var(--sleep-bg); border-color: var(--sleep-border); color: var(--sleep-text); }
+.dp-day.dp-hint-off   { background: var(--off-bg);   border-color: var(--off-border);   color: var(--off-text);   }
+.dp-day.dp-hint-night { background: var(--night-bg); border-color: var(--night-border); color: var(--night-text); }
+.dp-day.dp-hint-day:hover,
+.dp-day.dp-hint-sleep:hover,
+.dp-day.dp-hint-off:hover,
+.dp-day.dp-hint-night:hover {
+  filter: brightness(1.2);
+  transform: scale(1.08);
+}
+.dp-day.dp-selected {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+  box-shadow: 0 0 14px var(--accent-glow);
+  filter: none !important;
+}
+
+/* сетка месяцев */
+.dp-months-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+.dp-month-cell {
+  text-align: center;
+  border-radius: 7px;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 0.5px solid transparent;
+  color: var(--text);
+  transition: background 0.1s, border-color 0.1s;
+}
+.dp-month-cell:hover        { background: var(--surface2); border-color: var(--border2); }
+.dp-month-cell.dp-cur-month { border-color: var(--border2); color: var(--muted); }
+.dp-month-cell.dp-sel-month { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* сетка годов */
+.dp-years-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+.dp-year-cell {
+  text-align: center;
+  border-radius: 7px;
+  padding: 7px 2px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 0.5px solid transparent;
+  color: var(--text);
+  transition: background 0.1s, border-color 0.1s;
+}
+.dp-year-cell:hover        { background: var(--surface2); border-color: var(--border2); }
+.dp-year-cell.dp-cur-year  { border-color: var(--border2); color: var(--muted); }
+.dp-year-cell.dp-sel-year  { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+@media (max-width: 480px) {
+  .dp { width: calc(100vw - 2rem); }
+}
